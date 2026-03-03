@@ -686,16 +686,19 @@ MxResult IsleApp::SetupWindow(HINSTANCE hInstance, LPSTR lpCmdLine)
 BOOL IsleApp::ReadReg(LPCSTR name, LPSTR outValue, DWORD outSize)
 {
 	HKEY hKey;
-	DWORD valueType;
+	DWORD valueType = 0;
 
 	BOOL out = FALSE;
 	DWORD size = outSize;
 	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, "SOFTWARE\\Mindscape\\LEGO Island", 0, KEY_READ, &hKey) == ERROR_SUCCESS) {
-		if (RegQueryValueEx(hKey, name, NULL, &valueType, (LPBYTE) outValue, &size) == ERROR_SUCCESS) {
-			if (RegCloseKey(hKey) == ERROR_SUCCESS) {
-				out = TRUE;
-			}
+		LONG queryResult = RegQueryValueEx(hKey, name, NULL, &valueType, (LPBYTE) outValue, &size);
+		if (queryResult == ERROR_SUCCESS &&
+			(valueType == REG_SZ || valueType == REG_EXPAND_SZ || valueType == REG_MULTI_SZ) && outSize > 0) {
+			outValue[outSize - 1] = '\0';
+			out = TRUE;
 		}
+
+		RegCloseKey(hKey);
 	}
 
 	return out;
