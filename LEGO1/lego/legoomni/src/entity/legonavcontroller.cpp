@@ -365,7 +365,7 @@ MxBool LegoNavController::CalculateNewPosDir(
 			delta_rad = DTOR(m_rotationalVel * deltaTime);
 		}
 		else {
-			delta_rad = DTOR(m_rotationalVel * m_rotSensitivity);
+			delta_rad = DTOR(m_rotationalVel * m_rotSensitivity * deltaTime);
 		}
 
 		if (p_up != NULL && (*p_up)[1] < 0.0f) {
