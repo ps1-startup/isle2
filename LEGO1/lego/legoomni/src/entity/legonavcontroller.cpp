@@ -365,7 +365,8 @@ MxBool LegoNavController::CalculateNewPosDir(
 			delta_rad = DTOR(m_rotationalVel * deltaTime);
 		}
 		else {
-			delta_rad = DTOR(m_rotationalVel * m_rotSensitivity);
+			// Preserve the original 40Hz turn feel while making rotation time-based.
+			delta_rad = DTOR(m_rotationalVel * m_rotSensitivity * deltaTime * 40.0f);
 		}
 
 		if (p_up != NULL && (*p_up)[1] < 0.0f) {
